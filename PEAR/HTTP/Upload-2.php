@@ -41,7 +41,9 @@
 
 //on server remove _stage for deploy
 $root = $_SERVER['DOCUMENT_ROOT'];
+//require_once("./PEAR.php");
 require_once ''.$root.'/PEAR/PEAR.php';
+echo $root;
 /**
  * defines default chmod
  */
@@ -206,7 +208,7 @@ class HTTP_Upload_Error extends PEAR
                 'en'    => 'The file was only partially uploaded.',
                 'de'    => 'Die Datei wurde unvollst&auml;ndig &uuml;bertragen.',
                 'nl'    => 'Het bestand is slechts gedeeltelijk geupload.',
-                'pt_BR' => 'O arquivo não foi enviado por completo.'
+                'pt_BR' => 'O arquivo nï¿½o foi enviado por completo.'
                 ),
             'ERROR' => array(
                 'es'    => 'Error en subida:',
@@ -216,7 +218,7 @@ class HTTP_Upload_Error extends PEAR
                 'pt_BR' => 'Erro de upload:'
                 ),
             'DEV_NO_DEF_FILE' => array(
-                'es'    => 'No está definido en el formulario este nombre de fichero como &lt;input type="file" name=?&gt;.',
+                'es'    => 'No estï¿½ definido en el formulario este nombre de fichero como &lt;input type="file" name=?&gt;.',
                 'en'    => 'This filename is not defined in the form as &lt;input type="file" name=?&gt;.',
                 'de'    => 'Dieser Dateiname ist im Formular nicht als &lt;input type="file" name=?&gt; definiert.',
                 'nl'    => 'Deze bestandsnaam is niett gedefineerd in het formulier als &lt;input type="file" name=?&gt;.'
@@ -279,7 +281,7 @@ class HTTP_Upload extends HTTP_Upload_Error
      * @var array
      */
     var $files = array();
-    
+
     /**
      * Contains the desired chmod for uploaded files
      * @var int
@@ -333,17 +335,17 @@ class HTTP_Upload extends HTTP_Upload_Error
         //build only once for multiple calls
         if (!$is_built) {
             $files = &$this->_buildFiles();
-            if (PEAR::isError($files)) {
-                // there was an error with the form.
-                // Create a faked upload embedding the error
-                $this->files['_error'] =  &new HTTP_Upload_File(
-                                                       '_error', null,
-                                                       null, null,
-                                                       null, $files->getCode(),
-                                                       $this->lang, $this->_chmod);
-            } else {
-                $this->files = $files;
-            }
+            // if (PEAR::isError($files)) {
+            //     // there was an error with the form.
+            //     // Create a faked upload embedding the error
+            //     $this->files['_error'] =  &new HTTP_Upload_File(
+            //                                            '_error', null,
+            //                                            null, null,
+            //                                            null, $files->getCode(),
+            //                                            $this->lang, $this->_chmod);
+            // } else {
+            //     $this->files = $files;
+            // }
             $is_built = true;
         }
         if ($file !== null) {
@@ -481,7 +483,7 @@ class HTTP_Upload extends HTTP_Upload_Error
     /**
      * Sets the chmod to be used for uploaded files
      *
-     * @param int Desired mode 
+     * @param int Desired mode
      */
     function setChmod($mode)
     {
@@ -555,7 +557,7 @@ class HTTP_Upload_File extends HTTP_Upload_Error
      * @access  public
      */
     function HTTP_Upload_File($name = null, $tmp = null,  $formname = null,
-                              $type = null, $size = null, $error = null, 
+                              $type = null, $size = null, $error = null,
                               $lang = null, $chmod = HTTP_UPLOAD_DEFAULT_CHMOD)
     {
         $this->HTTP_Upload_Error($lang);
@@ -661,7 +663,7 @@ class HTTP_Upload_File extends HTTP_Upload_Error
      */
     function nameToSafe($name, $maxlen=250)
     {
-        $noalpha = 'ÁÉÍÓÚÝáéíóúýÂÊÎÔÛâêîôûÀÈÌÒÙàèìòùÄËÏÖÜäëïöüÿÃãÕõÅåÑñÇç@°ºª';
+        $noalpha = 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½@ï¿½ï¿½ï¿½';
         $alpha   = 'AEIOUYaeiouyAEIOUaeiouAEIOUaeiouAEIOUaeiouyAaOoAaNnCcaooa';
 
         $name = substr($name, 0, $maxlen);
@@ -705,13 +707,13 @@ class HTTP_Upload_File extends HTTP_Upload_Error
      *              because the file excess the max permitted file size)
      * @access public
      */
-    function isError()
-    {
-        if (in_array($this->upload['error'], array('TOO_LARGE', 'BAD_FORM','DEV_NO_DEF_FILE'))) {
-            return true;
-        }
-        return false;
-    }
+    // function isError()
+    // {
+    //     if (in_array($this->upload['error'], array('TOO_LARGE', 'BAD_FORM','DEV_NO_DEF_FILE'))) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     /**
      * Moves the uploaded file to its destination directory.

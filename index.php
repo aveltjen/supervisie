@@ -16,13 +16,13 @@ $tpl->setVariable("titel","Supervisie V3");
 
 //*** Search for login request ****
 if($_REQUEST["checklogin"] == true){
-	
+
 	//login request - user authenticate,  & put in session
 	$username = mysql_escape_string($_REQUEST["username"]);
 	$password = mysql_escape_string($_REQUEST["password"]);
-	
+
 	$user = AuthenticateUser($username, $password);
-	
+
 	if($user != null){
 
 		 $_SESSION["user"] = $user;
@@ -30,7 +30,7 @@ if($_REQUEST["checklogin"] == true){
 	}else{
 		$tpl->setVariable('msg','<p>Gebruikersnaam of wachtwoord onjuist!!!</p>');
 	}
-	
+
 }
 
 //********************* Template Tonen *************

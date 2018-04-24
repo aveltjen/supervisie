@@ -10,43 +10,43 @@
 $ebits = ini_get('error_reporting');
 error_reporting($ebits ^ E_NOTICE);
 
-	//*********Check user session***************	
+	//*********Check user session***************
 	if(!isset($_SESSION["user"])){
 		header("Location: ../../index.php");
 		exit;
 	}else{
-		$user = $_SESSION["user"];	
+		$user = $_SESSION["user"];
 	}
-	
+
 	//*********Template modifications***************
 	$tpl = new HTML_Template_IT("./");
 	$tpl->loadTemplatefile("wervenbeheer.tpl.php");
-	
-	
+
+
 	//*******Template specific code*************
-	
+
 	//** Uitloggen
 	if($_REQUEST["action"]=="logout"){
 		session_destroy();
 		header("Location: ../../index.php");
 	}
-	
-	
+
+
 	$tpl->setVariable("titel","");
-	
-	
+
+
 	//** Profiel ophalen
 	$id			= $user["id"];
 	$profile 	= GetUserById($id);
 	$fullname	= $profile["voornaam"]." ".$profile["naam"];
 		$tpl->setVariable("Name",$fullname);
-	
+
 	//** WERF DELETEN
 	if($_REQUEST["action"]=="delete"){
 		if (isset($_POST["selecteren"])) {
 			foreach ($_POST["selecteren"] as $WerfID){
-				
-				$status = CheckWerfStatus($WerfID);		
+
+				$status = CheckWerfStatus($WerfID);
 
 
 				if($status == 0){
@@ -54,23 +54,23 @@ error_reporting($ebits ^ E_NOTICE);
 
 
 				}else{
-					
+
 				}
-			 	
-			 	
+
+
 			}
-			
-		 	
+
+
 		 }
-						
-	}	
+
+	}
 	//AANVRAAG ARCHIVERING
 	if($_REQUEST["action"]=="archiveer"){
 	$werfid = $_REQUEST["werf"];
 	$werfnummer = $_REQUEST["werfnummer"];
-	
+
 	$tpl->setVariable("txt_archief","
-	
+
 			<table width='100%' border='0' class='tekstnormal' bgcolor='#fae3e3'>
 			<tr>
 			<td align='center' colspan='2'><img src='images/exclamation.png' > Bent u zeker werf <b>".$werfnummer."</b> te archiveren?<br>gearchiveerde werven verdwijnen uit de lijst <i>'mijn werven'</i></td>
@@ -88,20 +88,20 @@ error_reporting($ebits ^ E_NOTICE);
 			</tr>
 			</table>
 			<br>
-	
+
 			");
 	}
-	
+
 	//WERF ARCHIVEREN
 	if($_REQUEST["archiveer"]=="yes"){
 		$werfid = $_REQUEST["werf"];
 		setarchief($werfid);
 	}
-	
-	
+
+
 	//VARIABELE WERF CORRECT UPGELOAD!!!
 	$bevestigd = "
-		
+
 		<table width='100%' border='0' class='tekstnormal' bgcolor='#fae3e3'>
 		<tr>
 			<td align='center' colspan='2'><img src='images/tick.png' > De werf is correct aangemaakt!</td>
@@ -113,54 +113,58 @@ error_reporting($ebits ^ E_NOTICE);
 		</tr>
 		</table>
 		<br>
-		
+
 		";
-	
+
 	//** Werf toevoegen
 	if($_REQUEST["action"]=="addwerf"){
 		$nummer	= $_REQUEST["nummer"];
 		$omschrijving = $_REQUEST["omschrijving"];
 		$startdatum	= $_REQUEST["startdatum"];
-		
+
+		echo $nummer;
+		echo $omschrijving;
+		echo $startdatum;
 		//** DOCUMENT UPLOADEN
-		
+
 		//upload uitvoeren
 		$upload = new HTTP_Upload("nl");
 		$file = $upload->getFiles("f");
-		
-		
+
+
 			if ($file->isValid()) {
 				$file->setName("uniq");
 				$moved = $file->moveTo("".$root."/files_dir/uploads/meetstaten/");
 			    if (!PEAR::isError($moved)) {
 			    	$meetstaat = $file->getProp("name");
-			    	
-			 
-			    	
+
+						echo "stuurt door";
+
+
 			    	addWerf($id,$nummer,$omschrijving,$startdatum,$meetstaat);
  			    	email_webmaster($meetstaat,$nummer,$omschrijving,$fullname);
-			    	
-					//mail($to, $subject, $message, $headers);	
+
+					//mail($to, $subject, $message, $headers);
 			    	$tpl->setVariable("txt_bevestigd",$bevestigd);
 			    } else {
 			        echo $moved->getMessage();
 			    }
 			} elseif ($file->isMissing()) {
-			   		
+
 			} elseif ($file->isError()) {
 			    echo $file->errorMsg();
 			}
-		
+
 		}
-		
+
 
 	//get date
 	$today = date('d-m-Y');
 	$tpl->setVariable("today",$today);
-	
+
 	//**WERVEN OPHALEN
 	$werflist = GetWervenByUserIDArchief($id);
-	
+
 	$tpl->setCurrentBlock("Werflist");
 	while($werf = $werflist->fetchrow(MDB2_FETCHMODE_ASSOC)){
 		if($werf["actief"] == 0){
@@ -184,7 +188,7 @@ error_reporting($ebits ^ E_NOTICE);
 		$tpl->setVariable('editwerf',"&nbsp;<a href='editwerf.php?action=checkwerf&WerfID=".$werf["id"]."'><img src='images/monitor_edit.png' title='wijzigen'></a>");
 		$tpl->setVariable('archief',"");
 		}
-		
+
 
 		if($werf["actief"] == 2){
 
@@ -200,13 +204,13 @@ error_reporting($ebits ^ E_NOTICE);
 		}else{
 
 
-				
+
 		}
 		$tpl->parseCurrentBlock();
 	}
 
 	//********************* Template Tonen *************
-	
+
 	$tpl->show(); //moet ge doen, anders ziede niet
-	
+
 ?>
